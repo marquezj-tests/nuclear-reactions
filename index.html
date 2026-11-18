@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nuclear Reaction Energetics</title>
+<meta name="description" content="Interactive energy-level diagram of X(a,b)Y* built from ENSDF data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Reaction kinematics &middot; after the plate on p.&nbsp;18 of the Pocketbook of Data for Nuclear Engineers</p>
+    <h1>Nuclear Reaction Energetics</h1>
+    <p class="lede">Pick a target, a projectile and an ejectile, set the energy of the beam in the
+      laboratory frame, and the whole energy balance of <em>X</em>(<em>a</em>,<em>b</em>)<em>Y</em>* is
+      redrawn to scale from the ENSDF mass excesses and adopted levels.</p>
+  </header>
+
+  <h2 class="reaction" id="reaction">&nbsp;</h2>
+  <p class="message" id="message"></p>
+
+  <section class="controls" aria-label="Reaction and beam">
+    <div class="field">
+      <label for="target">Target <em>X</em></label>
+      <div class="combo">
+        <input id="target" type="text" role="combobox" aria-expanded="false" aria-controls="target-list"
+               aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="e.g. 56Fe">
+        <ul class="listbox" id="target-list" role="listbox" aria-label="Nuclides" hidden></ul>
+      </div>
+    </div>
+
+    <div class="field">
+      <label id="projectile-label">Projectile <em>a</em></label>
+      <div class="chips" id="projectile-chips" role="group" aria-labelledby="projectile-label"></div>
+      <div class="combo tight" hidden>
+        <input id="proj-nuc" type="text" role="combobox" aria-expanded="false" aria-controls="proj-nuc-list"
+               aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="nuclide">
+        <ul class="listbox" id="proj-nuc-list" role="listbox" aria-label="Nuclides" hidden></ul>
+      </div>
+    </div>
+
+    <div class="field">
+      <label id="ejectile-label">Ejectile <em>b</em></label>
+      <div class="chips" id="ejectile-chips" role="group" aria-labelledby="ejectile-label"></div>
+      <div class="combo tight" hidden>
+        <input id="ejec-nuc" type="text" role="combobox" aria-expanded="false" aria-controls="ejec-nuc-list"
+               aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="nuclide">
+        <ul class="listbox" id="ejec-nuc-list" role="listbox" aria-label="Nuclides" hidden></ul>
+      </div>
+    </div>
+
+    <div class="field wide">
+      <label for="energy">Incident energy <em>E</em><sub>a</sub> (laboratory)</label>
+      <div class="energy-row">
+        <input id="energy" type="number" min="0" step="any" inputmode="decimal">
+        <select id="energy-unit" aria-label="Energy unit">
+          <option>eV</option>
+          <option selected>keV</option>
+          <option>MeV</option>
+        </select>
+      </div>
+      <input id="energy-slider" class="slider" type="range" min="-6" max="5.3" step="0.01" aria-label="Incident energy, logarithmic">
+      <div class="presets">
+        <button type="button" class="preset" data-energy="0.0000253">thermal</button>
+        <button type="button" class="preset" data-energy="1000">1 MeV</button>
+        <button type="button" class="preset" data-energy="2450">2.45 MeV D&ndash;D</button>
+        <button type="button" class="preset" data-energy="14100">14.1 MeV D&ndash;T</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="angle">Emission angle <em>&theta;</em> of <em>b</em> <span class="value" id="angle-value">0&deg;</span></label>
+      <input id="angle" class="slider" type="range" min="0" max="180" step="1" value="0">
+      <label class="toggle" for="relativistic">
+        <input id="relativistic" type="checkbox">
+        <span>Relativistic kinematics</span>
+      </label>
+    </div>
+
+    <div class="field">
+      <label for="level">Residual level <em>W</em><sub>1</sub> of <em>Y</em></label>
+      <select id="level"></select>
+      <p class="hint">Adopted levels from ENSDF. The ground state leaves <em>W</em><sub>1</sub> = 0 and <em>Q</em><sub>1</sub> = <em>Q</em><sub>0</sub>.</p>
+    </div>
+  </section>
+
+  <figure class="stage">
+    <div class="figure-host" id="figure-host"></div>
+    <figcaption id="figure-caption"></figcaption>
+  </figure>
+
+  <div class="readout" id="readout"></div>
+
+  <section class="formulary">
+    <h3>What the diagram draws</h3>
+    <div class="formulas">
+      <p><em>E</em><sub>CM</sub> = <span class="frac"><span>m<sub>a</sub></span><span>m<sub>a</sub> + m<sub>X</sub></span></span> <em>E</em><sub>a</sub>
+         &nbsp;&nbsp; <em>E</em><sub>disp</sub> = <span class="frac"><span>m<sub>X</sub></span><span>m<sub>a</sub> + m<sub>X</sub></span></span> <em>E</em><sub>a</sub></p>
+      <p><em>E</em>*(C) = <em>S</em><sub>a</sub> + <em>E</em><sub>disp</sub> &nbsp;&nbsp;
+         <em>Q</em><sub>0</sub> = &Delta;(<em>m<sub>X</sub></em>) + &Delta;(<em>m<sub>a</sub></em>) &minus; &Delta;(<em>m<sub>Y</sub></em>) &minus; &Delta;(<em>m<sub>b</sub></em>) = <em>Q</em><sub>1</sub> + <em>W</em><sub>1</sub></p>
+      <p class="master"><em>Q</em><sub>1</sub> = (1 + <span class="frac"><span>m<sub>b</sub></span><span>m<sub>Y</sub></span></span>) <em>E</em><sub>b</sub>
+        &minus; (1 &minus; <span class="frac"><span>m<sub>a</sub></span><span>m<sub>Y</sub></span></span>) <em>E</em><sub>a</sub>
+        &minus; <span class="frac"><span>2&radic;(<em>m<sub>a</sub>m<sub>b</sub></em>)</span><span>m<sub>Y</sub></span></span>
+        &radic;<em>E</em><sub>a</sub>&radic;<em>E</em><sub>b</sub> cos&nbsp;&theta;</p>
+      <p class="hint">The app solves that relation for <em>E</em><sub>b</sub>; both roots are reported when the
+        ejectile is confined to a forward cone. Switching on relativistic kinematics replaces it with the exact
+        invariant-mass solution, which is also what is used whenever a photon is involved.</p>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <p><strong>Data.</strong> Mass excesses, spins, parities, half-lives and adopted levels come from the
+      <a href="https://www-nds.iaea.org/relnsd/vcharthtml/api_v0_guide.html" target="_blank" rel="noopener">IAEA
+      Live Chart of Nuclides API</a>, which serves ENSDF together with the AME2020 mass evaluation distributed
+      with it. <span id="data-stamp"></span></p>
+    <p><strong>Conventions.</strong> Atomic mass excesses are used throughout, so the electron masses cancel in
+      <em>Q</em><sub>0</sub>; electron binding is neglected. Energies are kinetic unless marked as excitation.</p>
+  </footer>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
