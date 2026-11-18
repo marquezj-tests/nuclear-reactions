@@ -24,9 +24,22 @@ Then open <http://localhost:8000/>. Any static server will do; the page needs on
 because it fetches its data files (opening `index.html` from the file system will not
 work).
 
-The published site is the repository itself: `.github/workflows/pages.yml` runs the
-kinematics tests and then deploys the root of the branch to GitHub Pages on every
-push, so nothing has to be built or copied first.
+## The published site
+
+The repository root *is* the site, so nothing has to be built or copied first:
+`.github/workflows/pages.yml` runs the kinematics tests and then deploys the root of
+the branch to GitHub Pages on every push to it, and on demand from the Actions tab.
+
+Pages has to be switched on once by a repository admin, under
+**Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"**. A workflow
+token is not allowed to create the Pages site, so until that is done the workflow stops
+at `Create Pages site failed: Resource not accessible by integration`. Re-run it after
+switching Pages on and the site goes up at
+<https://marquezj-tests.github.io/nuclear-reactions/>.
+
+Serving straight from the branch (**Source: "Deploy from a branch"**, branch
+`claude/sweet-knuth-wjcwjj`, folder `/ (root)`) works just as well and needs no
+workflow at all; `.nojekyll` is there so the files are published as they are.
 
 ## What it draws
 

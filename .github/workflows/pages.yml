@@ -1,3 +1,10 @@
+# Deploys the repository root (which is the site) to GitHub Pages.
+#
+# One-time setup, which only a repository admin can do:
+#   Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"
+# The GITHUB_TOKEN of a workflow is not allowed to create the Pages site
+# itself, so until that is set this workflow fails on "Create Pages site
+# failed: Resource not accessible by integration".
 name: Deploy to GitHub Pages
 
 on:
