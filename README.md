@@ -1,5 +1,7 @@
 # Nuclear Reaction Energetics
 
+**Live site: <https://marquezj-tests.github.io/nuclear-reactions/>**
+
 An interactive remake of the reaction-kinematics plate on p. 18 of the *Pocketbook of
 Data for Nuclear Engineers*: the energy-level diagram of
 
@@ -12,7 +14,7 @@ choose. Every number on the figure comes from the ENSDF/AME data shipped in `dat
 and the whole plate — level positions, brackets, emission angles, the sharing of the
 kinetic energy between ejectile and recoil — is recomputed on every change.
 
-## Run it
+## Run it locally
 
 ```bash
 python3 -m http.server 8000
@@ -21,6 +23,10 @@ python3 -m http.server 8000
 Then open <http://localhost:8000/>. Any static server will do; the page needs one
 because it fetches its data files (opening `index.html` from the file system will not
 work).
+
+The published site is the repository itself: `.github/workflows/pages.yml` runs the
+kinematics tests and then deploys the root of the branch to GitHub Pages on every
+push, so nothing has to be built or copied first.
 
 ## What it draws
 
