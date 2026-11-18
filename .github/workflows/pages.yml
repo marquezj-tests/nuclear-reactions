@@ -31,13 +31,13 @@ jobs:
       - name: Check out the site
         uses: actions/checkout@v4
 
+      - name: Check the kinematics
+        run: node tests/kinematics.test.mjs
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-
-      - name: Check the kinematics
-        run: node tests/kinematics.test.mjs
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@v3
