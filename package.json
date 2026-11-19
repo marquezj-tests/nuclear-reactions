@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "mathjax-full": "^3.2.2"
+  },
+  "name": "nuclear-reactions",
+  "private": true,
+  "type": "module",
+  "description": "Interactive X(a,b)Y* energy-level diagram built from ENSDF data",
+  "scripts": {
+    "test": "node tests/kinematics.test.mjs",
+    "build:equations": "node tools/build_equations.mjs",
+    "serve": "python3 -m http.server 8000"
+  }
+}

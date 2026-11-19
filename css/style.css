@@ -33,7 +33,7 @@
 }
 
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-body); margin: 0; line-height: 1.5; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; margin: 0; line-height: 1.5; }
 .wrap {
   max-width: 1360px; margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -230,12 +230,29 @@ svg .angle-arc { fill: none; stroke: var(--muted); stroke-width: 1; }
   margin: 0 0 8px; font-family: var(--font-display); font-size: 12px; letter-spacing: .09em;
   text-transform: uppercase; color: var(--muted);
 }
-.formulas p { margin: 0 0 8px; font-family: var(--font-mono); font-size: 14px; }
-.formulas p.master { font-size: 15px; }
-.formulas .hint { font-family: var(--font-body); font-size: 12px; max-width: 80ch; }
-.frac { display: inline-grid; vertical-align: -0.62em; text-align: center; font-size: .82em; }
-.frac > span:first-child { border-bottom: 1px solid currentColor; padding: 0 3px; }
-.frac > span:last-child { padding: 0 3px; }
+/* the relations, typeset with LaTeX and baked to SVG by tools/build_equations.mjs */
+.formulas { display: flex; flex-direction: column; }
+.eq {
+  margin: 0; padding: 11px 0; display: grid; gap: 4px 20px; align-items: center;
+  grid-template-columns: minmax(0, 1fr) 230px; border-top: 1px solid var(--hair-soft);
+}
+.eq:first-child { border-top: none; padding-top: 2px; }
+.eq-body { min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+.eq-svg { display: block; height: auto; max-width: 100%; font-size: 1.45em; color: var(--ink); }
+.eq-master .eq-svg { font-size: 1.6em; }
+.eq-master .eq-svg, .eq-wide .eq-svg { max-width: none; }
+.eq figcaption { font-size: 12px; color: var(--muted); text-wrap: balance; }
+@media (max-width: 760px) {
+  .eq { grid-template-columns: 1fr; }
+  .eq-svg { font-size: 1.2em; }
+  .eq-master .eq-svg { font-size: 1.3em; }
+  /* the two wide relations scroll sideways; fade the edge so that reads as more to come */
+  .eq-master .eq-body, .eq-wide .eq-body {
+    -webkit-mask-image: linear-gradient(to right, #000 88%, rgb(0 0 0 / .15));
+    mask-image: linear-gradient(to right, #000 88%, rgb(0 0 0 / .15));
+  }
+}
+.formulary .hint { margin: 12px 0 0; font-size: 12.5px; max-width: 80ch; }
 
 .colophon { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
 .colophon p { margin: 0; max-width: 95ch; }

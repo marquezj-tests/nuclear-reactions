@@ -104,16 +104,39 @@ curl "https://www-nds.iaea.org/relnsd/v1/data?fields=levels&nuclides=56fe" -o ra
 python3 tools/build_data.py --raw-gs gs_all.csv --raw-levels raw_levels --out data
 ```
 
+## Equations
+
+The relations printed under the diagram are written in LaTeX in
+`tools/equations.mjs` and typeset with MathJax at build time:
+
+```bash
+npm install
+npm run build:equations
+```
+
+That writes one standalone file per relation to `assets/equations/` and injects the
+same SVG into `index.html` between the `<!-- equations:start -->` and
+`<!-- equations:end -->` markers, so the page carries no maths library at run time.
+MathJax paints the glyph paths with `currentColor`, so the equations follow the
+page's theme; the glyph ids are prefixed per equation so that several of them can
+live in one document.
+
+Edit the LaTeX in `tools/equations.mjs`, re-run the build, and commit both the
+`assets/equations/` files and the regenerated `index.html`.
+
 ## Layout
 
 ```
-index.html          the page
-css/style.css       tokens, layout, and the styling of the SVG itself
-js/nuclear.js       masses, Q values, classical and relativistic kinematics
-js/data.js          loading and lookup of the ENSDF data
-js/diagram.js       the SVG plate
-js/app.js           controls and read-outs
-tools/build_data.py builds data/ from the IAEA tables
+index.html               the page, with the typeset equations inlined
+css/style.css            tokens, layout, and the styling of the SVG itself
+js/nuclear.js            masses, Q values, classical and relativistic kinematics
+js/data.js               loading and lookup of the ENSDF data
+js/diagram.js            the SVG plate
+js/app.js                controls and read-outs
+assets/equations/*.svg   the relations, typeset from LaTeX
+tools/equations.mjs      their LaTeX source
+tools/build_equations.mjs  MathJax -> SVG, injected into index.html
+tools/build_data.py      builds data/ from the IAEA tables
 tools/build_artifact.py  folds everything into one self-contained page
 tests/kinematics.test.mjs
 ```
@@ -121,7 +144,7 @@ tests/kinematics.test.mjs
 ## Tests
 
 ```bash
-node tests/kinematics.test.mjs
+npm test
 ```
 
 Checks the Q values, separation energies and thresholds of a set of standard reactions
